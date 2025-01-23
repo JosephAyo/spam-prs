@@ -3,4 +3,5 @@ env/*
 *.csv
 *.todo
 *.graphql
+*.pkl
 *.json
