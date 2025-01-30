@@ -6,3 +6,4 @@ env/*
 *.graphql
 *.pkl
 *.json
+*-output.ipynb
