@@ -3,7 +3,8 @@ import papermill as pm  # type: ignore
 notebooks = [
     "MiningPRs.ipynb",
     "MiningUserOrgsJoinInfo.ipynb",
-    "MiningUserContributions.ipynb"
+    "MiningUserContributions.ipynb",
+    "MiningPRTimeline.ipynb",
 ]
 
 for notebook in notebooks:
