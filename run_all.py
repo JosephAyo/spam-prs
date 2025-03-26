@@ -26,6 +26,11 @@ notebook_execution_details = [
         },
     },
     {
+        "notebook": "MiningPRFiles.ipynb",
+        "output": "MiningPRFiles-output.ipynb",
+        "parameters": {},
+    },
+    {
         "notebook": "MiningNonSpamPRs.ipynb",
         "output": "MiningNonSpamPRs-output.ipynb",
         "parameters": {},
@@ -40,6 +45,13 @@ notebook_execution_details = [
     {
         "notebook": "MiningPRTimeline.ipynb",
         "output": "MiningPRTimeline-output.ipynb",
+        "parameters": {
+            "is_mining_spam": False,
+        },
+    },
+    {
+        "notebook": "MiningPRFiles.ipynb",
+        "output": "MiningPRFiles-output.ipynb",
         "parameters": {
             "is_mining_spam": False,
         },
