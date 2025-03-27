@@ -7,3 +7,4 @@ env/*
 *.pkl
 *.json
 *-output.ipynb
+*.log
