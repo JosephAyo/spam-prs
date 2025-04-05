@@ -25,15 +25,23 @@ notebook_execution_details = [
             "is_mining_spam": True,
         },
     },
-    {
-        "notebook": "MiningPRFiles.ipynb",
-        "output": "MiningPRFiles-output.ipynb",
-        "parameters": {},
-    },
+    # do this later
+    # {
+    #     "notebook": "MiningPRFiles.ipynb",
+    #     "output": "MiningPRFiles-output.ipynb",
+    #     "parameters": {},
+    # },
     {
         "notebook": "MiningNonSpamPRs.ipynb",
         "output": "MiningNonSpamPRs-output.ipynb",
-        "parameters": {},
+        "parameters": {
+            "start_date_param": "2023-12-17T17:02",
+            "repos_to_skip": [
+                "daiyi/blog",
+                "thoemmi/thomasfreudenberg.com",
+                "faithworkcamps/faithworkcamps.github.io",
+            ],
+        },
     },
     {
         "notebook": "MiningUserOrgsJoinInfo.ipynb",
@@ -47,8 +55,11 @@ notebook_execution_details = [
         "output": "MiningPRTimeline-output.ipynb",
         "parameters": {
             "is_mining_spam": False,
+            "repo_to_start_from": "freeCodeCamp/freeCodeCamp",
+            "title_to_start_from": "fix(curriculum): refactor Cat Photo App step 12",
         },
     },
+    # do this later
     {
         "notebook": "MiningPRFiles.ipynb",
         "output": "MiningPRFiles-output.ipynb",
