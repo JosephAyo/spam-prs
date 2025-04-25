@@ -1,12 +1,20 @@
+import pandas as pd
+
 import papermill as pm  # type: ignore
 
-notebook_execution_details = [
-    {
+csv_data = pd.read_csv("repositories_ranked_cleaned.csv")
+notebook_execution_details = []
+
+# Iterate through each row in the CSV file
+for index, row in csv_data.iterrows():
+    notebook_execution_details.append({
         "notebook": "MiningPRs-zero-ai.ipynb",
-        "output": "MiningPRs-zero-ai-output.ipynb",
-        "parameters": {},
-    },
-]
+        "output": f"MiningPRs-zero-ai-{index}-output.ipynb",
+        "parameters": {
+            "repository_name": row["name"],
+            "repository_created_at": row["createdAt"],
+        },
+    })
 
 
 for notebook_detail in notebook_execution_details:
