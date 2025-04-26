@@ -6,3 +6,4 @@ tqdm
 papermill
 jupyter
 ipykernel
+python-daemon
