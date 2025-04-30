@@ -28,9 +28,12 @@ def run_notebook_batch(start_idx, end_idx, csv_data):
     for notebook_detail in notebook_execution_details:
         notebook = notebook_detail.get("notebook")
         notebook_output = notebook_detail.get("output")
-        repo_name = notebook_detail.get('parameters').get('repository_name')
+        repo_name = notebook_detail.get("parameters").get("repository_name")
         start_time = time.time()
-        print(f"Executing {repo_name} notebook saving as {notebook_output}", file=sys.stdout)
+        print(
+            f"Executing {repo_name} notebook saving as {notebook_output}",
+            file=sys.stdout,
+        )
         pm.execute_notebook(
             input_path=notebook,
             output_path=notebook_output,
@@ -38,23 +41,36 @@ def run_notebook_batch(start_idx, end_idx, csv_data):
         )
         end_time = time.time()
         print(f"Executed {repo_name} and saved as {notebook_output}", file=sys.stdout)
-        print(f"Execution time for {repo_name}: {end_time - start_time:.2f} seconds", file=sys.stdout)
+        print(
+            f"Execution time for {repo_name}: {end_time - start_time:.2f} seconds",
+            file=sys.stdout,
+        )
 
 
 def main():
     # Parsing command-line arguments
     parser = argparse.ArgumentParser(description="Run notebooks concurrently.")
     parser.add_argument(
-        "--threads", type=int, default=4, help="Number of threads for concurrent execution."
+        "--threads",
+        type=int,
+        default=4,
+        help="Number of threads for concurrent execution.",
     )
     args = parser.parse_args()
     num_threads = args.threads
 
     log_path = "/tmp/notebook_daemon.log"
     err_path = "/tmp/notebook_daemon_error.log"
+    # Read the file "ignore_repos.txt" and filter out the repo names
+    ignore_repos = set()
+    if os.path.exists("ignore_repos.txt"):
+        with open("ignore_repos.txt", "r") as f:
+            ignore_repos = set(line.strip() for line in f if line.strip())
 
+    # Filter out the repositories to ignore
     csv_data = pd.read_csv("repositories_ranked_cleaned.csv")
-    total_rows = len(csv_data)
+    csv_data = csv_data[~csv_data["name"].isin(ignore_repos)]
+    total_rows = min(385, len(csv_data))  # Limit to the first 385 repositories
     chunk_size = total_rows // num_threads
     futures = []
 
@@ -67,10 +83,12 @@ def main():
     ):
         with ThreadPoolExecutor(max_workers=num_threads) as executor:
             for i in range(num_threads):
-                start_idx = 3 if i == 0 else i * chunk_size
+                start_idx = i * chunk_size
                 # Ensure the last chunk handles any remaining rows
                 end_idx = (i + 1) * chunk_size if i != num_threads - 1 else total_rows
-                futures.append(executor.submit(run_notebook_batch, start_idx, end_idx, csv_data))
+                futures.append(
+                    executor.submit(run_notebook_batch, start_idx, end_idx, csv_data)
+                )
 
             # Wait for all futures to complete
             for future in futures:
