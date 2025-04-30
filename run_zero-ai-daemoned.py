@@ -61,15 +61,15 @@ def main():
 
     log_path = "/tmp/notebook_daemon.log"
     err_path = "/tmp/notebook_daemon_error.log"
-    # Read the file "ignore_repos.txt" and filter out the repo names
-    ignore_repos = set()
-    if os.path.exists("ignore_repos.txt"):
-        with open("ignore_repos.txt", "r") as f:
-            ignore_repos = set(line.strip() for line in f if line.strip())
+    # Read the file "completed_repos.txt" and filter out the repo names
+    completed_repos = set()
+    if os.path.exists("completed_repos.txt"):
+        with open("completed_repos.txt", "r") as f:
+            completed_repos = set(line.strip() for line in f if line.strip())
 
     # Filter out the repositories to ignore
     csv_data = pd.read_csv("repositories_ranked_cleaned.csv")
-    csv_data = csv_data[~csv_data["name"].isin(ignore_repos)]
+    csv_data = csv_data[~csv_data["name"].isin(completed_repos)]
     total_rows = min(385, len(csv_data))  # Limit to the first 385 repositories
     chunk_size = total_rows // num_threads
     futures = []
