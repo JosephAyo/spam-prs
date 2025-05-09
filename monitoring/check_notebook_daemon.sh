@@ -10,4 +10,4 @@ fi
 
 
 # crontab -e
-# 0 */4 * * * /path/to/check_notebook_daemon.sh
+# 0 */4 * * * /tmp/check_notebook_daemon.sh
