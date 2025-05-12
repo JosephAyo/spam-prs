@@ -1105,3 +1105,8 @@ nlohmann/json
 pulumi/pulumi
 joomla/joomla-cms
 node-red/node-red
+bigbluebutton/bigbluebutton
+symfony/symfony
+microsoft/typescript
+azure/azure-sdk-for-python
+azure/azure-sdk-for-net
