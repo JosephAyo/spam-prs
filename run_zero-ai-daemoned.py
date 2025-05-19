@@ -67,10 +67,11 @@ def main():
         with open("completed_repos.txt", "r") as f:
             completed_repos = set(line.strip() for line in f if line.strip())
 
-    # Filter out the repositories to ignore
+    # Limit to the first 385 repositories before filtering out the completed ones
     csv_data = pd.read_csv("repositories_ranked_cleaned.csv")
+    csv_data = csv_data.head(385)
     csv_data = csv_data[~csv_data["name"].isin(completed_repos)]
-    total_rows = min(385, len(csv_data))  # Limit to the first 385 repositories
+    total_rows = len(csv_data)
     chunk_size = total_rows // num_threads
     futures = []
 
