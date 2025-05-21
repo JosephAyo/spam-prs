@@ -4,6 +4,7 @@ import requests
 import itertools
 import random
 import os
+import datetime
 
 # Read tokens from a text file
 tokens_file = "./env/zero-ai-tokens.txt"
@@ -23,11 +24,19 @@ token_iterator = itertools.cycle(rotated_tokens)
 url = "https://api.zerogpt.com/api/detect/detectText"
 
 # CSV input and output file paths
-input_csv_path = "../datasets/molssi__qcfractal/molssi__qcfractal-progress.csv"
-output_csv_path = "../datasets/molssi__qcfractal/molssi__qcfractal-detection.csv"
+repo_name = 'molssi__qcfractal'
+input_csv_path = f"../datasets/{repo_name}/{repo_name}-progress.csv"
+output_csv_path = f"../datasets/{repo_name}/{repo_name}-detection.csv"
 
 # Ensure output directory exists
 os.makedirs(os.path.dirname(output_csv_path), exist_ok=True)
+
+
+def log_activity(activity: str):
+    log = f"{datetime.datetime.now()}: {activity}\n"
+    # print(log)
+    with open(f"../datasets/{repo_name}/{repo_name}-detection-output.log", "a") as log_file:
+        log_file.write(log)
 
 # Read input and prepare to write output
 with open(input_csv_path, mode="r", encoding="utf-8") as input_file, open(
@@ -69,9 +78,9 @@ with open(input_csv_path, mode="r", encoding="utf-8") as input_file, open(
                 zerogpt_response = json.dumps(response_data)
             except Exception as e:
                 zerogpt_response = f"Error: {e}"
-                print(f"Error processing row id {row.get('id', '')}: {e}")
+                log_activity(f"Error processing row id {row.get('id', '')}: {e}")
             else:
-                print(f"Successfully processed row id {row.get('id', '')}")
+                log_activity(f"Successfully processed row id {row.get('id', '')}")
 
         output_row = {
             "id": row.get("id", ""),
