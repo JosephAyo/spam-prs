@@ -72,6 +72,7 @@ def main():
     csv_data = csv_data.head(385)
     csv_data = csv_data[~csv_data["name"].isin(completed_repos)]
     total_rows = len(csv_data)
+    print(f"total_rows = :{total_rows}")
     chunk_size = total_rows // num_threads
     futures = []
 
