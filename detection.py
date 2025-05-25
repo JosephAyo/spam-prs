@@ -24,7 +24,7 @@ token_iterator = itertools.cycle(rotated_tokens)
 url = "https://api.zerogpt.com/api/detect/detectText"
 
 # CSV input and output file paths
-repo_name = 'molssi__qcfractal'
+repo_name = 'JetBrains__intellij-community'
 input_csv_path = f"../datasets/{repo_name}/{repo_name}-progress.csv"
 output_csv_path = f"../datasets/{repo_name}/{repo_name}-detection.csv"
 
