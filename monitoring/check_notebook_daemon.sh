@@ -11,3 +11,6 @@ fi
 
 # crontab -e
 # 0 */4 * * * /mnt/ext-hdd1/ayo/spam-prs/monitoring/check_notebook_daemon.sh
+# /mnt/ext-hdd1/ayo/datasets/JetBrains__intellij-community/
+
+# scp -r ayo-b@nokogiri.naist.jp:/mnt/ext-hdd1/ayo/datasets/JetBrains__intellij-community/ ./

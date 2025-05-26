@@ -1399,3 +1399,5 @@ phpmyadmin/phpmyadmin
 prometheus/prometheus
 scipy/scipy
 influxdata/influxdb
+LibreOffice/core
+sap/openui5
