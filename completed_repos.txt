@@ -1418,3 +1418,5 @@ angular/angular-cli
 envoyproxy/envoy
 weblateorg/weblate
 dotnet/runtime
+apereo/cas
+darktable-org/darktable
