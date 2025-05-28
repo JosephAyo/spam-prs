@@ -21,6 +21,7 @@ def run_notebook_batch(start_idx, end_idx, csv_data):
                 "parameters": {
                     "repository_name": row["name"],
                     "repository_created_at": row["createdAt"],
+                    "ignore_indexed_start_date": False,
                 },
             }
         )

@@ -1,25 +1,30 @@
 import pandas as pd
-
 import papermill as pm  # type: ignore
 
 csv_data = pd.read_csv("repositories_ranked_cleaned.csv")
+
+# Filter to include only 'keycloak/keycloak'
+csv_data = csv_data[csv_data["name"] == "keycloak/keycloak"]
+
 notebook_execution_details = []
 
-# Iterate through each row in the CSV file
 for index, row in csv_data.iterrows():
-    notebook_execution_details.append({
-        "notebook": "MiningPRs-zero-ai.ipynb",
-        "output": f"MiningPRs-zero-ai-{index}-output.ipynb",
-        "parameters": {
-            "repository_name": row["name"],
-            "repository_created_at": row["createdAt"],
-        },
-    })
-
+    print(f'row["name"]:{row["name"]}')
+    notebook_execution_details.append(
+        {
+            "notebook": "MiningPRs-zero-ai.ipynb",
+            "output": f"MiningPRs-zero-ai-{index}-output.ipynb",
+            "parameters": {
+                "repository_name": row["name"],
+                "repository_created_at": row["createdAt"],
+                "ignore_indexed_start_date": False,
+            },
+        }
+    )
 
 for notebook_detail in notebook_execution_details:
-    notebook = notebook_detail.get("notebook")
-    notebook_output = f"{notebook_detail.get("output")}"
+    notebook = notebook_detail["notebook"]
+    notebook_output = notebook_detail["output"]
 
     print(f"Executing {notebook} and saving as {notebook_output}")
     pm.execute_notebook(
