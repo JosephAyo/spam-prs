@@ -62,6 +62,7 @@ def main():
 
     log_path = "/tmp/notebook_daemon.log"
     err_path = "/tmp/notebook_daemon_error.log"
+
     # Read the file "completed_repos.txt" and filter out the repo names
     completed_repos = set()
     if os.path.exists("completed_repos.txt"):
@@ -74,10 +75,12 @@ def main():
     csv_data = csv_data[~csv_data["name"].isin(completed_repos)]
     total_rows = len(csv_data)
     print(f"total_rows = :{total_rows}")
-    chunk_size = total_rows // num_threads
+
+    # Adjust thread count to avoid more threads than rows
+    num_threads = min(num_threads, total_rows)
+    chunk_size = (total_rows + num_threads - 1) // num_threads  # ceiling division
     futures = []
 
-    # Create separate ranges for concurrent processing
     with daemon.DaemonContext(
         stdout=open(log_path, "a+"),
         stderr=open(err_path, "a+"),
@@ -87,13 +90,14 @@ def main():
         with ThreadPoolExecutor(max_workers=num_threads) as executor:
             for i in range(num_threads):
                 start_idx = i * chunk_size
-                # Ensure the last chunk handles any remaining rows
-                end_idx = (i + 1) * chunk_size if i != num_threads - 1 else total_rows
-                futures.append(
-                    executor.submit(run_notebook_batch, start_idx, end_idx, csv_data)
-                )
+                end_idx = min((i + 1) * chunk_size, total_rows)
+                if start_idx < end_idx:
+                    futures.append(
+                        executor.submit(
+                            run_notebook_batch, start_idx, end_idx, csv_data
+                        )
+                    )
 
-            # Wait for all futures to complete
             for future in futures:
                 future.result()
 
