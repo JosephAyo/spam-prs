@@ -24,7 +24,7 @@ token_iterator = itertools.cycle(rotated_tokens)
 url = "https://api.zerogpt.com/api/detect/detectText"
 
 # CSV input and output file paths
-repo_name = 'JetBrains__intellij-community'
+repo_name = "tensorflow__tensorflow"
 input_csv_path = f"../datasets/{repo_name}/{repo_name}-progress.csv"
 output_csv_path = f"../datasets/{repo_name}/{repo_name}-detection.csv"
 
@@ -35,8 +35,14 @@ os.makedirs(os.path.dirname(output_csv_path), exist_ok=True)
 def log_activity(activity: str):
     log = f"{datetime.datetime.now()}: {activity}\n"
     # print(log)
-    with open(f"../datasets/{repo_name}/{repo_name}-detection-output.log", "a") as log_file:
+    with open(
+        f"../datasets/{repo_name}/{repo_name}-detection-output.log", "a"
+    ) as log_file:
         log_file.write(log)
+
+
+def is_significant(text, min_chars=250):
+    return text and len(text.strip()) >= min_chars
 
 # Read input and prepare to write output
 with open(input_csv_path, mode="r", encoding="utf-8") as input_file, open(
@@ -44,7 +50,12 @@ with open(input_csv_path, mode="r", encoding="utf-8") as input_file, open(
 ) as output_file:
 
     reader = csv.DictReader(input_file)
-    rows = itertools.islice(reader, None)  # Adjust or remove the limit as needed
+
+    # Filter only significant rows first, then take first 20
+    significant_rows = (
+        row for row in reader if is_significant(row.get("bodyText", ""))
+    )
+    rows = itertools.islice(significant_rows, 20)
     writer = csv.DictWriter(
         output_file,
         fieldnames=[
@@ -64,24 +75,22 @@ with open(input_csv_path, mode="r", encoding="utf-8") as input_file, open(
         body_text = row.get("bodyText", "")
         zerogpt_response = ""
 
-        if body_text:
-            current_token = next(token_iterator)
-            payload = json.dumps({"input_text": body_text})
-            headers = {
-                "ApiKey": current_token,
-                "Content-Type": "application/json",
-            }
+        current_token = next(token_iterator)
+        payload = json.dumps({"input_text": body_text})
+        headers = {
+            "ApiKey": current_token,
+            "Content-Type": "application/json",
+        }
 
-            try:
-                response = requests.post(url, headers=headers, data=payload)
-                response_data = response.json()
-                zerogpt_response = json.dumps(response_data)
-            except Exception as e:
-                zerogpt_response = f"Error: {e}"
-                log_activity(f"Error processing row id {row.get('id', '')}: {e}")
-            else:
-                log_activity(f"Successfully processed row id {row.get('id', '')}")
-
+        try:
+            response = requests.post(url, headers=headers, data=payload)
+            response_data = response.json()
+            zerogpt_response = json.dumps(response_data)
+        except Exception as e:
+            zerogpt_response = f"Error: {e}"
+            log_activity(f"Error processing row id {row.get('id', '')}: {e}")
+        else:
+            log_activity(f"Successfully processed row id {row.get('id', '')}")
         output_row = {
             "id": row.get("id", ""),
             "repository_name_with_owner": row.get("repository_name_with_owner", ""),
